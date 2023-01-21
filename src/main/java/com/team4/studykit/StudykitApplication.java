@@ -2,9 +2,17 @@ package com.team4.studykit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class StudykitApplication {
+public class StudykitApplication extends SpringBootServletInitializer {
+
+    // ec2 404에러 해결 코드
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(StudykitApplication.class);
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(StudykitApplication.class, args);
