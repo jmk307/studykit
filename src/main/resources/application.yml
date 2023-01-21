@@ -1,7 +1,9 @@
 server:
-  port: 4444
+  port: 5000
 
 spring:
+  profiles:
+    default: prod
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://awseb-e-grzfrc5pzw-stack-awsebrdsdatabase-9xpc58dnjqmf.cczvck6i4z1m.ap-northeast-2.rds.amazonaws.com:3306/studykit
