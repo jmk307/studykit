@@ -1,0 +1,18 @@
+server:
+  port: 4444
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://awseb-e-grzfrc5pzw-stack-awsebrdsdatabase-9xpc58dnjqmf.cczvck6i4z1m.ap-northeast-2.rds.amazonaws.com:3306/studykit
+    username: admin
+    password: rejin0421
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 1000
+    show-sql: true
