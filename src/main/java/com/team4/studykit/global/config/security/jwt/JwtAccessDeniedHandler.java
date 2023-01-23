@@ -9,8 +9,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import com.luckyseven.backend.global.error.ErrorCode;
-import com.luckyseven.backend.global.error.ErrorResponse;
+import com.team4.studykit.global.error.ErrorCode;
+import com.team4.studykit.global.error.ErrorResponse;
 
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
