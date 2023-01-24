@@ -33,7 +33,7 @@ public class RedisService {
         redisTemplate.delete(key);
     }
 
-    boolean hasKey(String key) {
+    public boolean hasKey(String key) {
         return redisTemplate.hasKey(key);
     }
 }
