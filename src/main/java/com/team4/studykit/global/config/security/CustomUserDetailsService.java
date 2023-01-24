@@ -1,5 +1,7 @@
 package com.team4.studykit.global.config.security;
 
+import com.team4.studykit.domain.member.MemberRepository;
+import com.team4.studykit.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,19 +18,18 @@ import java.util.Collection;
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-
     private final MemberRepository memberRepository;
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(final String email) {
-        return memberRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(final String id) {
+        return memberRepository.findById(id)
                 .map(this::createUser)
-                .orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
+                .orElseThrow(() -> new UsernameNotFoundException(id + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
     private User createUser(Member member) {
-        return new User(member.getEmail(), member.getPassword(), authorities());
+        return new User(member.getId(), member.getPassword(), authorities());
     }
 
     private static Collection<? extends GrantedAuthority> authorities() {
