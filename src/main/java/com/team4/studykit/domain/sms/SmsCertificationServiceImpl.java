@@ -20,8 +20,8 @@ import java.util.Random;
 public class SmsCertificationServiceImpl implements SmsCertificationService {
     private final NaverSmsService naverSmsService;
     private final RedisService redisService;
-    private final String VERIFICATION_PREFIX = "sms:";
-    private final int VERIFICATION_TIME_LIMIT = 3 * 60;
+    private static final String VERIFICATION_PREFIX = "sms:";
+    private static final int VERIFICATION_TIME_LIMIT = 3 * 60;
 
     @Value("${spring.profiles.active}")
     private String springProfile;
