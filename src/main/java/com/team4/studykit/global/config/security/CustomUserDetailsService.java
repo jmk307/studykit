@@ -1,6 +1,6 @@
 package com.team4.studykit.global.config.security;
 
-import com.team4.studykit.domain.member.MemberRepository;
+import com.team4.studykit.domain.member.repository.MemberRepository;
 import com.team4.studykit.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
