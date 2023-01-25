@@ -34,6 +34,10 @@ public class MemberService {
             throw new BadRequestException(ErrorCode.MEMBER_ALREADY_EXIST);
         }
 
+        if (!memberRequestDto.getJoinAccepted()) {
+            throw new BadRequestException(ErrorCode.JOIN_NOT_ACCEPTED);
+        }
+
         Member member = Member.builder()
                 .id(memberRequestDto.getId())
                 .password(passwordEncoder.encode(memberRequestDto.getPassword()))
