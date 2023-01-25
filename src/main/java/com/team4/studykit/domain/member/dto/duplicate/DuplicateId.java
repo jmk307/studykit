@@ -1,4 +1,4 @@
-package com.team4.studykit.domain.member.dto;
+package com.team4.studykit.domain.member.dto.duplicate;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

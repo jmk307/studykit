@@ -1,4 +1,4 @@
-package com.team4.studykit.domain.member;
+package com.team4.studykit.domain.member.repository;
 
 import com.team4.studykit.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

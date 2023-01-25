@@ -1,9 +1,10 @@
-package com.team4.studykit.domain.member;
+package com.team4.studykit.domain.member.service;
 
 import com.team4.studykit.domain.member.dto.LoginDto;
-import com.team4.studykit.domain.member.dto.MemberRequestDto;
-import com.team4.studykit.domain.member.dto.MemberResponseDto;
+import com.team4.studykit.domain.member.dto.member.MemberRequestDto;
+import com.team4.studykit.domain.member.dto.member.MemberResponseDto;
 import com.team4.studykit.domain.member.entity.Member;
+import com.team4.studykit.domain.member.repository.MemberRepository;
 import com.team4.studykit.global.config.CommonApiResponse;
 import com.team4.studykit.global.config.security.dto.TokenResponseDto;
 import com.team4.studykit.global.config.security.jwt.TokenProvider;
@@ -56,7 +57,8 @@ public class MemberService {
         Optional<Member> checkMember = memberRepository.findById(loginDto.getId());
         if (checkMember.isEmpty()) {
             throw new BadRequestException(ErrorCode.MEMBER_NOT_FOUND);
-        } else if (checkMember.get().getIsSocial()) {
+        } else if (Boolean.TRUE.equals(checkMember.get().getIsSocial())
+                && memberRepository.existsById(checkMember.get().getId())) {
             throw new BadRequestException(ErrorCode.SOCIAL_ALREADY_EXIST);
         }
 
