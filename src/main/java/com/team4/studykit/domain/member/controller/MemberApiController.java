@@ -7,7 +7,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -59,5 +61,11 @@ public class MemberApiController {
                 ? "이미 사용중인 닉네임입니다."
                 : "이 닉네님은 사용 가능합니다!";
         return ResponseEntity.ok(CommonApiResponse.of(result));
+    }
+
+    @GetMapping
+    public ResponseEntity<String> checkMember(
+            @ApiIgnore Authentication authentication) {
+        return ResponseEntity.ok(authentication.getName());
     }
 }
