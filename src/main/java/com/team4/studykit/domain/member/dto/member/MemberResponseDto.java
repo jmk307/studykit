@@ -1,4 +1,4 @@
-package com.team4.studykit.domain.member.dto;
+package com.team4.studykit.domain.member.dto.member;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.studykit.domain.member.entity.Member;

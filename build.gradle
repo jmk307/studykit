@@ -48,6 +48,9 @@ dependencies {
 
     //stringUtils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+    // oauth2.0
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.6.3'
 }
 
 tasks.named('test') {

@@ -1,5 +1,11 @@
-package com.team4.studykit.domain.member;
+package com.team4.studykit.domain.member.controller;
 
+import com.team4.studykit.domain.member.dto.duplicate.DuplicateId;
+import com.team4.studykit.domain.member.dto.duplicate.DuplicateNickname;
+import com.team4.studykit.domain.member.dto.member.MemberRequestDto;
+import com.team4.studykit.domain.member.dto.member.MemberResponseDto;
+import com.team4.studykit.domain.member.repository.MemberRepository;
+import com.team4.studykit.domain.member.service.MemberService;
 import com.team4.studykit.domain.member.dto.*;
 import com.team4.studykit.global.config.CommonApiResponse;
 import com.team4.studykit.global.config.security.dto.TokenResponseDto;
