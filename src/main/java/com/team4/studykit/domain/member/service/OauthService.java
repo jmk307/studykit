@@ -4,6 +4,7 @@ import com.team4.studykit.domain.member.dto.member.MemberResponseDto;
 import com.team4.studykit.domain.member.dto.oauth.GoogleUserDto;
 import com.team4.studykit.domain.member.dto.oauth.KakaoUserDto;
 import com.team4.studykit.domain.member.entity.Member;
+import com.team4.studykit.domain.member.model.Social;
 import com.team4.studykit.domain.member.repository.MemberRepository;
 import com.team4.studykit.global.config.CommonApiResponse;
 import com.team4.studykit.global.config.security.dto.TokenRequestDto;
@@ -52,21 +53,25 @@ public class OauthService {
         String mail = "";
         String email = "";
         String name = "";
+        Social social = null;
 
         if (provider.equals("kakao")) {
             KakaoUserDto kakaoUserDto = getKakaoUser(accessToken);
             mail = kakaoUserDto.getKakaoAccount().getEmail();
             email = kakaoUserDto.getKakaoAccount().getEmail();
             name = kakaoUserDto.getProperties().getNickname();
+            social = Social.KAKAO;
         } else if (provider.equals("google")) {
             GoogleUserDto googleUserDto = getGoogleUser(accessToken);
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();
             name = googleUserDto.getName();
+            social = Social.GOOGLE;
         }
 
-        Optional<Member> checkMember = memberRepository.findById(
-                mail.substring(0, mail.indexOf("@"))
+        Optional<Member> checkMember = memberRepository.findByIdAndSocial(
+                mail.substring(0, mail.indexOf("@")),
+                social
         );
 
         if (checkMember.isPresent()) {
@@ -78,13 +83,14 @@ public class OauthService {
 
             return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
         } else {
+
             /* 새로 가입할 회원 */
             Member member = Member.builder()
                     .id(email.substring(0, mail.indexOf("@")))
                     .nickname(name)
                     .password("social")
                     .joinAccepted(true)
-                    .isSocial(true)
+                    .social(social)
                     .build();
             memberRepository.save(member);
 
