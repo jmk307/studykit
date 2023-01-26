@@ -2,6 +2,7 @@ package com.team4.studykit.domain.member.dto.member;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.studykit.domain.member.entity.Member;
+import com.team4.studykit.domain.member.model.Social;
 import com.team4.studykit.global.config.security.dto.TokenResponseDto;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class MemberResponseDto {
 
     private boolean joinAccepted;
 
-    private boolean isSocial;
+    private Social social;
 
     private String accessToken;
 
@@ -29,7 +30,7 @@ public class MemberResponseDto {
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .joinAccepted(member.getJoinAccepted())
-                .isSocial(member.getIsSocial())
+                .social(member.getSocial())
                 .build();
     }
 
@@ -38,7 +39,7 @@ public class MemberResponseDto {
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .joinAccepted(member.getJoinAccepted())
-                .isSocial(member.getIsSocial())
+                .social(member.getSocial())
                 .accessToken(tokenResponseDto.getAccessToken())
                 .refreshToken(tokenResponseDto.getRefreshToken())
                 .build();
