@@ -2,6 +2,7 @@ package com.team4.studykit.domain.member.service;
 
 import com.team4.studykit.domain.member.dto.member.MemberResponseDto;
 import com.team4.studykit.domain.member.dto.oauth.GoogleUserDto;
+import com.team4.studykit.domain.member.dto.oauth.KakaoTokenDto;
 import com.team4.studykit.domain.member.dto.oauth.KakaoUserDto;
 import com.team4.studykit.domain.member.entity.Member;
 import com.team4.studykit.domain.member.model.Social;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 @Service
@@ -49,20 +52,21 @@ public class OauthService {
 
     // 소셜 로그인 & 회원가입
     @Transactional
-    public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, String accessToken) {
+    public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, String code) throws URISyntaxException {
+        KakaoTokenDto kakaoTokenDto = getSocialAccessToken(provider, code);
         String mail = "";
         String email = "";
         String name = "";
         Social social = null;
 
         if (provider.equals("kakao")) {
-            KakaoUserDto kakaoUserDto = getKakaoUser(accessToken);
+            KakaoUserDto kakaoUserDto = getKakaoUser(kakaoTokenDto.getAccess_token());
             mail = kakaoUserDto.getKakaoAccount().getEmail();
             email = kakaoUserDto.getKakaoAccount().getEmail();
             name = kakaoUserDto.getProperties().getNickname();
             social = Social.KAKAO;
         } else if (provider.equals("google")) {
-            GoogleUserDto googleUserDto = getGoogleUser(accessToken);
+            GoogleUserDto googleUserDto = getGoogleUser(code);
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();
             name = googleUserDto.getName();
@@ -99,12 +103,14 @@ public class OauthService {
             HttpHeaders httpHeaders = new HttpHeaders();
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
+            URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
+            httpHeaders.setLocation(redirectUri);
 
-            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.SEE_OTHER);
         }
     }
 
-    public TokenRequestDto getSocialAccessToken(String provider, String code) {
+    public KakaoTokenDto getSocialAccessToken(String provider, String code) {
         if (provider.equals("kakao")) {
             String getTokenURL =
                     "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
@@ -115,7 +121,7 @@ public class OauthService {
                 return webClient.post()
                         .uri(getTokenURL)
                         .retrieve()
-                        .bodyToMono(TokenRequestDto.class).block();
+                        .bodyToMono(KakaoTokenDto.class).block();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new BadRequestException(ErrorCode.KAKAO_BAD_REQUEST);
@@ -131,7 +137,7 @@ public class OauthService {
                 return webClient.post()
                         .uri(getTokenURL)
                         .retrieve()
-                        .bodyToMono(TokenRequestDto.class).block();
+                        .bodyToMono(KakaoTokenDto.class).block();
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new BadRequestException(ErrorCode.GOOGLE_BAD_REQUEST);
@@ -139,13 +145,13 @@ public class OauthService {
         }
     }
 
-    public KakaoUserDto getKakaoUser(String kakaoAccessToken) {
+    public KakaoUserDto getKakaoUser(String code) {
         String getUserURL = "https://kapi.kakao.com/v2/user/me";
 
         try {
             return webClient.post()
                             .uri(getUserURL)
-                            .header("Authorization", "Bearer " + kakaoAccessToken)
+                            .header("Authorization", "Bearer " + code)
                             .retrieve()
                             .bodyToMono(KakaoUserDto.class)
                             .block();
@@ -155,13 +161,13 @@ public class OauthService {
         }
     }
 
-    public GoogleUserDto getGoogleUser(String googleAccessToken) {
+    public GoogleUserDto getGoogleUser(String code) {
         String getUserURL = "https://www.googleapis.com/oauth2/v1/userinfo";
 
         try {
             return webClient.post()
                     .uri(getUserURL)
-                    .header("Authorization", "Bearer " + googleAccessToken)
+                    .header("Authorization", "Bearer " + code)
                     .retrieve()
                     .bodyToMono(GoogleUserDto.class)
                     .block();
