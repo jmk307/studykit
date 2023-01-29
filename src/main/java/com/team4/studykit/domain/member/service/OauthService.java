@@ -84,8 +84,10 @@ public class OauthService {
             HttpHeaders httpHeaders = new HttpHeaders();
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
+            URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
+            httpHeaders.setLocation(redirectUri);
 
-            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.SEE_OTHER);
         } else {
 
             /* 새로 가입할 회원 */
