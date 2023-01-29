@@ -6,17 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.security.Timestamp;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoUserDto {
     @JsonProperty("id")
     private String authenticationCode;
-
-    @JsonProperty("connected_at")
-    private Timestamp connectedAt;
 
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
