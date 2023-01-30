@@ -55,6 +55,8 @@ public class OauthService {
     // 소셜 로그인 & 회원가입
     @Transactional
     public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, String code) throws URISyntaxException {
+        System.out.println("바보");
+        System.out.println(code);
         KakaoTokenDto kakaoTokenDto = getSocialAccessToken(provider, code);
         String mail = "";
         String email = "";

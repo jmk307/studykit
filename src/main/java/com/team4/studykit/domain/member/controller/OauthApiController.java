@@ -25,6 +25,7 @@ public class OauthApiController {
             @PathVariable String provider,
             @RequestBody OauthRequest oauthRequest) throws URISyntaxException {
         System.out.println("성공");
+        System.out.println(oauthRequest.getCode());
         return oauthService.oauthLogin(provider, oauthRequest.getCode());
     }
 }
