@@ -124,6 +124,7 @@ public class OauthService {
             try {
                 return webClient.post()
                         .uri(getTokenURL)
+                        .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
                         .retrieve()
                         .bodyToMono(KakaoTokenDto.class).block();
             } catch (Exception e) {
