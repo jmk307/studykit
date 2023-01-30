@@ -55,26 +55,25 @@ public class OauthService {
 
     // 소셜 로그인 & 회원가입
     @Transactional
-    public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, KakaoUserDto kakaoUserDto) throws URISyntaxException {
-        System.out.println("바보");
-        System.out.println(kakaoUserDto);
+    public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, String code) {
         String mail = "";
         String email = "";
         String name = "";
         Social social = null;
 
         if (provider.equals("kakao")) {
-            /*KakaoUserDto kakaoUserDto = getKakaoUser(accessToken);*/
+            KakaoTokenDto kakaoTokenDto = getSocialAccessToken(provider, code);
+            KakaoUserDto kakaoUserDto = getKakaoUser(kakaoTokenDto.getAccess_token());
             mail = kakaoUserDto.getKakaoAccount().getEmail();
             email = kakaoUserDto.getKakaoAccount().getEmail();
             name = kakaoUserDto.getProperties().getNickname();
             social = Social.KAKAO;
         } else if (provider.equals("google")) {
-            /*GoogleUserDto googleUserDto = getGoogleUser(accessToken);
+            GoogleUserDto googleUserDto = getGoogleUser("");
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();
             name = googleUserDto.getName();
-            social = Social.GOOGLE;*/
+            social = Social.GOOGLE;
         }
 
         Optional<Member> checkMember = memberRepository.findByIdAndSocial(
@@ -88,8 +87,6 @@ public class OauthService {
             HttpHeaders httpHeaders = new HttpHeaders();
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
-            /*URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
-            httpHeaders.setLocation(redirectUri);*/
 
             return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
         } else {
@@ -109,8 +106,6 @@ public class OauthService {
             HttpHeaders httpHeaders = new HttpHeaders();
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
-            /*URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
-            httpHeaders.setLocation(redirectUri);*/
 
             return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.OK);
         }
@@ -122,7 +117,6 @@ public class OauthService {
                     "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
                             + kakaoRestApi + "&redirect_uri=" + kakaoRedirect + "&code="
                             + code;
-            System.out.println(getTokenURL);
             try {
                 return webClient.post()
                         .uri(getTokenURL)
