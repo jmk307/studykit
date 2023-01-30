@@ -1,6 +1,7 @@
 package com.team4.studykit.domain.member.service;
 
 import com.team4.studykit.domain.member.dto.member.MemberResponseDto;
+import com.team4.studykit.domain.member.dto.oauth.GoogleTokenDto;
 import com.team4.studykit.domain.member.dto.oauth.GoogleUserDto;
 import com.team4.studykit.domain.member.dto.oauth.KakaoTokenDto;
 import com.team4.studykit.domain.member.dto.oauth.KakaoUserDto;
@@ -62,14 +63,15 @@ public class OauthService {
         Social social = null;
 
         if (provider.equals("kakao")) {
-            KakaoTokenDto kakaoTokenDto = getSocialAccessToken(provider, code);
+            KakaoTokenDto kakaoTokenDto = getKakaoAccessToken(code);
             KakaoUserDto kakaoUserDto = getKakaoUser(kakaoTokenDto.getAccess_token());
             mail = kakaoUserDto.getKakaoAccount().getEmail();
             email = kakaoUserDto.getKakaoAccount().getEmail();
             name = kakaoUserDto.getProperties().getNickname();
             social = Social.KAKAO;
         } else if (provider.equals("google")) {
-            GoogleUserDto googleUserDto = getGoogleUser("");
+            GoogleTokenDto googleTokenDto = getGoogleAccessToken(code);
+            GoogleUserDto googleUserDto = getGoogleUser(googleTokenDto.getAccess_token());
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();
             name = googleUserDto.getName();
@@ -111,38 +113,38 @@ public class OauthService {
         }
     }
 
-    public KakaoTokenDto getSocialAccessToken(String provider, String code) {
-        if (provider.equals("kakao")) {
-            String getTokenURL =
-                    "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
-                            + kakaoRestApi + "&redirect_uri=" + kakaoRedirect + "&code="
-                            + code;
-            try {
-                return webClient.post()
-                        .uri(getTokenURL)
-                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                        .retrieve()
-                        .bodyToMono(KakaoTokenDto.class).block();
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new BadRequestException(ErrorCode.KAKAO_BAD_REQUEST);
-            }
-        } else {
-            String getTokenURL =
-                    "https://oauth2.googleapis.com/token"
-                            + "?code=" + code
-                            + "&client_id="+ googleClientId + "&client_secret=" + googleClientSecret
-                            + "&redirect_uri=" + googleRedirect + "&grant_type=authorization_code";
+    public KakaoTokenDto getKakaoAccessToken(String code) {
+        String getTokenURL =
+                "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
+                        + kakaoRestApi + "&redirect_uri=" + kakaoRedirect + "&code="
+                        + code;
+        try {
+            return webClient.post()
+                    .uri(getTokenURL)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .retrieve()
+                    .bodyToMono(KakaoTokenDto.class).block();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BadRequestException(ErrorCode.KAKAO_BAD_REQUEST);
+        }
+    }
 
-            try {
-                return webClient.post()
-                        .uri(getTokenURL)
-                        .retrieve()
-                        .bodyToMono(KakaoTokenDto.class).block();
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new BadRequestException(ErrorCode.GOOGLE_BAD_REQUEST);
-            }
+    public GoogleTokenDto getGoogleAccessToken(String code) {
+        String getTokenURL =
+                "https://oauth2.googleapis.com/token"
+                        + "?code=" + code
+                        + "&client_id="+ googleClientId + "&client_secret=" + googleClientSecret
+                        + "&redirect_uri=" + googleRedirect + "&grant_type=authorization_code";
+
+        try {
+            return webClient.post()
+                    .uri(getTokenURL)
+                    .retrieve()
+                    .bodyToMono(GoogleTokenDto.class).block();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BadRequestException(ErrorCode.GOOGLE_BAD_REQUEST);
         }
     }
 
@@ -162,13 +164,13 @@ public class OauthService {
         }
     }
 
-    public GoogleUserDto getGoogleUser(String code) {
+    public GoogleUserDto getGoogleUser(String accessToken) {
         String getUserURL = "https://www.googleapis.com/oauth2/v1/userinfo";
 
         try {
             return webClient.post()
                     .uri(getUserURL)
-                    .header("Authorization", "Bearer " + code)
+                    .header("Authorization", "Bearer " + accessToken)
                     .retrieve()
                     .bodyToMono(GoogleUserDto.class)
                     .block();
