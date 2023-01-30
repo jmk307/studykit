@@ -24,6 +24,7 @@ public class OauthApiController {
     public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(
             @PathVariable String provider,
             @RequestBody OauthRequest oauthRequest) throws URISyntaxException {
+        System.out.println("성공");
         return oauthService.oauthLogin(provider, oauthRequest.getCode());
     }
 }
