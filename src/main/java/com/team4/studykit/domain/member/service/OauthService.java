@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -34,6 +35,7 @@ public class OauthService {
     private final WebClient webClient;
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${kakao.rest_api}")
     private String kakaoRestApi;
@@ -94,7 +96,7 @@ public class OauthService {
             Member member = Member.builder()
                     .id(email.substring(0, mail.indexOf("@")))
                     .nickname(name)
-                    .password("social")
+                    .password(passwordEncoder.encode("social"))
                     .joinAccepted(true)
                     .social(social)
                     .build();

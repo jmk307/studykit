@@ -23,7 +23,7 @@ public class OauthApiController {
     @RequestMapping(value = "{provider}", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(
             @PathVariable String provider,
-            @RequestBody OauthRequest oauthRequest) throws URISyntaxException {
-        return oauthService.oauthLogin(provider, oauthRequest.getCode());
+            @RequestParam String code) throws URISyntaxException {
+        return oauthService.oauthLogin(provider, code);
     }
 }
