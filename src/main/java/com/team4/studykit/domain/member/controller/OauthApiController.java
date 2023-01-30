@@ -2,6 +2,7 @@ package com.team4.studykit.domain.member.controller;
 
 import com.team4.studykit.domain.member.dto.member.MemberResponseDto;
 import com.team4.studykit.domain.member.dto.oauth.KakaoTokenDto;
+import com.team4.studykit.domain.member.dto.oauth.KakaoUserDto;
 import com.team4.studykit.domain.member.dto.oauth.OauthRequest;
 import com.team4.studykit.domain.member.service.OauthService;
 import com.team4.studykit.global.config.CommonApiResponse;
@@ -26,6 +27,7 @@ public class OauthApiController {
             @PathVariable String provider,
             @RequestBody OauthRequest oauthRequest) throws URISyntaxException {
         KakaoTokenDto kakaoTokenDto = oauthService.getSocialAccessToken(provider, oauthRequest.getCode());
-        return oauthService.oauthLogin(provider, kakaoTokenDto.getAccess_token());
+        KakaoUserDto kakaoUserDto = oauthService.getKakaoUser(kakaoTokenDto.getAccess_token());
+        return oauthService.oauthLogin(provider, kakaoUserDto);
     }
 }
