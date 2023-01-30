@@ -54,23 +54,22 @@ public class OauthService {
 
     // 소셜 로그인 & 회원가입
     @Transactional
-    public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, String code) throws URISyntaxException {
+    public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(String provider, String accessToken) throws URISyntaxException {
         System.out.println("바보");
-        System.out.println(code);
-        KakaoTokenDto kakaoTokenDto = getSocialAccessToken(provider, code);
+        System.out.println(accessToken);
         String mail = "";
         String email = "";
         String name = "";
         Social social = null;
 
         if (provider.equals("kakao")) {
-            KakaoUserDto kakaoUserDto = getKakaoUser(kakaoTokenDto.getAccess_token());
+            KakaoUserDto kakaoUserDto = getKakaoUser(accessToken);
             mail = kakaoUserDto.getKakaoAccount().getEmail();
             email = kakaoUserDto.getKakaoAccount().getEmail();
             name = kakaoUserDto.getProperties().getNickname();
             social = Social.KAKAO;
         } else if (provider.equals("google")) {
-            GoogleUserDto googleUserDto = getGoogleUser(code);
+            GoogleUserDto googleUserDto = getGoogleUser(accessToken);
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();
             name = googleUserDto.getName();
