@@ -88,10 +88,10 @@ public class OauthService {
             HttpHeaders httpHeaders = new HttpHeaders();
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
-            URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
-            httpHeaders.setLocation(redirectUri);
+            /*URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
+            httpHeaders.setLocation(redirectUri);*/
 
-            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.SEE_OTHER);
+            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
         } else {
 
             /* 새로 가입할 회원 */
@@ -109,10 +109,10 @@ public class OauthService {
             HttpHeaders httpHeaders = new HttpHeaders();
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
-            URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
-            httpHeaders.setLocation(redirectUri);
+            /*URI redirectUri = new URI("http://localhost:3000/auth/login/kakao");
+            httpHeaders.setLocation(redirectUri);*/
 
-            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.SEE_OTHER);
+            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.OK);
         }
     }
 
@@ -152,13 +152,13 @@ public class OauthService {
         }
     }
 
-    public KakaoUserDto getKakaoUser(String code) {
+    public KakaoUserDto getKakaoUser(String accessToken) {
         String getUserURL = "https://kapi.kakao.com/v2/user/me";
 
         try {
             return webClient.post()
                             .uri(getUserURL)
-                            .header("Authorization", "Bearer " + code)
+                            .header("Authorization", "Bearer " + accessToken)
                             .retrieve()
                             .bodyToMono(KakaoUserDto.class)
                             .block();
