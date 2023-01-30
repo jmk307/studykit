@@ -120,7 +120,7 @@ public class OauthService {
                     "https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id="
                             + kakaoRestApi + "&redirect_uri=" + kakaoRedirect + "&code="
                             + code;
-
+            System.out.println(getTokenURL);
             try {
                 return webClient.post()
                         .uri(getTokenURL)
