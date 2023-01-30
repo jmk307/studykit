@@ -20,7 +20,7 @@ public class OauthApiController {
     private final OauthService oauthService;
 
     @ApiOperation(value = "Oauth 코드를 포함한 로그인 요청")
-    @RequestMapping(value = "{provider}", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "{provider}", produces = "application/json; charset=utf-8")
     public ResponseEntity<CommonApiResponse<MemberResponseDto>> oauthLogin(
             @PathVariable String provider,
             @RequestBody OauthRequest oauthRequest) throws URISyntaxException {
