@@ -70,6 +70,7 @@ public class OauthService {
             name = kakaoUserDto.getProperties().getNickname();
             social = Social.KAKAO;
         } else if (provider.equals("google")) {
+            System.out.println(code);
             GoogleTokenDto googleTokenDto = getGoogleAccessToken(code);
             GoogleUserDto googleUserDto = getGoogleUser(googleTokenDto.getAccess_token());
             mail = googleUserDto.getEmail();
@@ -136,7 +137,7 @@ public class OauthService {
                         + "?code=" + code
                         + "&client_id="+ googleClientId + "&client_secret=" + googleClientSecret
                         + "&redirect_uri=" + googleRedirect + "&grant_type=authorization_code";
-
+        System.out.println(getTokenURL);
         try {
             return webClient.post()
                     .uri(getTokenURL)
@@ -168,7 +169,7 @@ public class OauthService {
         String getUserURL = "https://www.googleapis.com/oauth2/v1/userinfo";
 
         try {
-            return webClient.post()
+            return webClient.get()
                     .uri(getUserURL)
                     .header("Authorization", "Bearer " + accessToken)
                     .retrieve()
