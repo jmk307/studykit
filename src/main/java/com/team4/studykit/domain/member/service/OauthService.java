@@ -72,6 +72,7 @@ public class OauthService {
         } else if (provider.equals("google")) {
             System.out.println(code);
             GoogleTokenDto googleTokenDto = getGoogleAccessToken(code);
+            System.out.println(googleTokenDto.getAccess_token());
             GoogleUserDto googleUserDto = getGoogleUser(googleTokenDto.getAccess_token());
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();

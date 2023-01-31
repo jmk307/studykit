@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class GoogleTokenDto {
     private String access_token;
     private Integer expires_in;
-    private String token_type;
     private String scope;
-    private String refresh_token;
+    private String token_type;
     private String id_token;
+    private String refresh_token;
 }
