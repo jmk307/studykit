@@ -70,9 +70,7 @@ public class OauthService {
             name = kakaoUserDto.getProperties().getNickname();
             social = Social.KAKAO;
         } else if (provider.equals("google")) {
-            System.out.println(code);
             GoogleTokenDto googleTokenDto = getGoogleAccessToken(code);
-            System.out.println(googleTokenDto.getAccess_token());
             GoogleUserDto googleUserDto = getGoogleUser(googleTokenDto.getAccess_token());
             mail = googleUserDto.getEmail();
             email = googleUserDto.getEmail();
@@ -81,7 +79,7 @@ public class OauthService {
         }
 
         Optional<Member> checkMember = memberRepository.findByIdAndSocial(
-                mail.substring(0, mail.indexOf("@")),
+                mail,
                 social
         );
 
@@ -89,7 +87,7 @@ public class OauthService {
             log.info("가입된 회원");
             /* 이미 가입된 회원 */
             HttpHeaders httpHeaders = new HttpHeaders();
-            TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
+            TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail);
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
 
             return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
@@ -97,7 +95,7 @@ public class OauthService {
 
             /* 새로 가입할 회원 */
             Member member = Member.builder()
-                    .id(email.substring(0, mail.indexOf("@")))
+                    .id(email)
                     .nickname(name)
                     .password(passwordEncoder.encode("social"))
                     .joinAccepted(true)
@@ -108,7 +106,7 @@ public class OauthService {
             log.info("새로운 회원");
 
             HttpHeaders httpHeaders = new HttpHeaders();
-            TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail.substring(0, mail.indexOf("@")));
+            TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail);
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
 
             return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.OK);
