@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 @RequestMapping("/sms")
 @RequiredArgsConstructor
 @Api(tags = "문자 인증")
+@ApiIgnore
 public class SmsCertificationController {
     private final SmsCertificationService smsCertificationService;
 
