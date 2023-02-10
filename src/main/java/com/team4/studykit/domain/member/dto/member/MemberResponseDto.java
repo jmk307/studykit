@@ -21,6 +21,8 @@ public class MemberResponseDto {
 
     private Social social;
 
+    private boolean isNew;
+
     private String accessToken;
 
     private String refreshToken;
@@ -42,6 +44,18 @@ public class MemberResponseDto {
                 .social(member.getSocial())
                 .accessToken(tokenResponseDto.getAccessToken())
                 .refreshToken(tokenResponseDto.getRefreshToken())
+                .build();
+    }
+
+    public static MemberResponseDto ofSocial(Member member, TokenResponseDto tokenResponseDto, boolean isNew) {
+        return MemberResponseDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .joinAccepted(member.getJoinAccepted())
+                .social(member.getSocial())
+                .accessToken(tokenResponseDto.getAccessToken())
+                .refreshToken(tokenResponseDto.getRefreshToken())
+                .isNew(isNew)
                 .build();
     }
 }

@@ -9,7 +9,6 @@ import com.team4.studykit.domain.member.entity.Member;
 import com.team4.studykit.domain.member.model.Social;
 import com.team4.studykit.domain.member.repository.MemberRepository;
 import com.team4.studykit.global.config.CommonApiResponse;
-import com.team4.studykit.global.config.security.dto.TokenRequestDto;
 import com.team4.studykit.global.config.security.dto.TokenResponseDto;
 import com.team4.studykit.global.config.security.jwt.TokenProvider;
 import com.team4.studykit.global.error.ErrorCode;
@@ -26,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 @Service
@@ -90,7 +87,7 @@ public class OauthService {
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail);
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
 
-            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.ofSocial(checkMember.get(), tokenResponseDTO, false)), httpHeaders, HttpStatus.OK);
         } else {
 
             /* 새로 가입할 회원 */
@@ -109,7 +106,7 @@ public class OauthService {
             TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(mail);
             httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
 
-            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.OK);
+            return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.ofSocial(member, tokenResponseDTO, true)), httpHeaders, HttpStatus.OK);
         }
     }
 

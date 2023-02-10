@@ -66,7 +66,11 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND(NOT_FOUND, "P001","해당 물품 정보를 찾을 수 없습니다"),
     PRODUCT_DEMAND_NOT_FOUND(NOT_FOUND, "PD002","존재하지 않는 댓글 ID입니다."),
     PRODUCT_DEMAND_REPLY_NOT_FOUND(NOT_FOUND, "PD002","존재하지 않는 댓글 ID입니다."),
-    PRODUCT_DEMAND_REPLY_PARENT_CHILD_NOT_VALID(BAD_REQUEST, "PD003", "부모댓글과 자식댓글의 게시글 번호가 일치하지 않습니다.");
+    PRODUCT_DEMAND_REPLY_PARENT_CHILD_NOT_VALID(BAD_REQUEST, "PD003", "부모댓글과 자식댓글의 게시글 번호가 일치하지 않습니다."),
+
+    /* 스터디 관련 오류 */
+    STUDY_NOT_FOUND(NOT_FOUND, "S001","해당 스터디 정보를 찾을 수 없습니다"),
+    STUDY_NOT_RECRUITING(NOT_FOUND, "S002","모집중인 스터디가 아닙니다");
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -1,5 +1,6 @@
 package com.team4.studykit.global.error;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.team4.studykit.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -118,12 +119,12 @@ public class GlobalExceptionHandler {
     /**
      * 아마존 S3 접근 오류
      */
-    /*@ExceptionHandler({AmazonS3Exception.class})
+    @ExceptionHandler({AmazonS3Exception.class})
     protected ResponseEntity<ErrorResponse> handleMultipartException(AmazonS3Exception e) {
         log.error("handleAmazonS3Exception", e);
         final ErrorResponse response = ErrorResponse.of(ErrorCode.AMAZON_ACCESS_DENIED);
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-    }*/
+    }
 
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleAllException(Exception e) {
