@@ -81,6 +81,14 @@ public class Study extends BaseTimeEntity {
         this.recruiting = recruiting;
     }
 
+    public void putLang(String lang) {
+        this.lang = lang;
+    }
+
+    public void putTool(String tool) {
+        this.tool = tool;
+    }
+
     @Builder
     public Study(Long studyId, String title, String description, String deadline,
                  List<String> studyImageUrl, int max, String lang, String tool,

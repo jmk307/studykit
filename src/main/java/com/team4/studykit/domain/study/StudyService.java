@@ -35,6 +35,15 @@ public class StudyService {
     private final StudyApplyRepository studyApplyRepository;
     private final MemberStudyRepository memberStudyRepository;
 
+    // 스터디 전체보기 -> 검색 조건 추가해야 함
+    @Transactional(readOnly = true)
+    public List<StudyResponseDto> showStudies() {
+        List<Study> studyList = studyRepository.findAll();
+        return studyList.stream()
+                .map(StudyResponseDto::of)
+                .collect(Collectors.toList());
+    }
+    
     // 스터디 개설
     @Transactional
     public StudyResponseDto makeStudy(String id, StudyRequestDto studyRequestDto, List<MultipartFile> multipartFiles) {
@@ -63,48 +72,68 @@ public class StudyService {
         studyRepository.save(study);
 
         if (studyRequestDto.getHashtags() != null) {
-            for (String hashtag : hastagsToSet(studyRequestDto)) {
-                if (hashtagRepository.existsByHashtagName(hashtag)) {
-                    Hashtag hashtagEntity = hashtagRepository.findByHashtagName(hashtag);
-                    StudyHashtag studyHashtag = StudyHashtag.builder()
-                            .study(study)
-                            .hashtag(hashtagEntity)
-                            .build();
-                    studyHashtagRepository.save(studyHashtag);
-
-                    study.putStudyHashtag(studyHashtag);
-                    studyRepository.save(study);
-                    hashtagEntity.putStudyHashtag(studyHashtag);
-                    hashtagRepository.save(hashtagEntity);
-                } else {
-                    Hashtag hashtagEntity = Hashtag.builder()
-                            .hashtagName(hashtag)
-                            .studyList(new ArrayList<>())
-                            .build();
-                    hashtagRepository.save(hashtagEntity);
-                    StudyHashtag studyHashtag = StudyHashtag.builder()
-                            .study(study)
-                            .hashtag(hashtagEntity)
-                            .build();
-                    studyHashtagRepository.save(studyHashtag);
-
-                    study.putStudyHashtag(studyHashtag);
-                    studyRepository.save(study);
-                    hashtagEntity.putStudyHashtag(studyHashtag);
-                    hashtagRepository.save(hashtagEntity);
-                }
+            for (String hashtag : hastagsToSet(studyRequestDto.getHashtags())) {
+                hashtagToEntity(study, hashtag);
             }
         }
         return StudyResponseDto.of(study);
     }
 
-    // 스터디 전체보기 -> 검색 조건 추가해야 함
+    // 스터디 조회
     @Transactional(readOnly = true)
-    public List<StudyResponseDto> showStudies() {
-        List<Study> studyList = studyRepository.findAll();
-        return studyList.stream()
-                .map(StudyResponseDto::of)
-                .collect(Collectors.toList());
+    public StudyResponseDto showStudy(String id, Long studyId) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.MEMBER_NOT_FOUND));
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.STUDY_NOT_FOUND));
+
+        boolean isEqual = study.getFounder().getNickname().equals(member.getNickname());
+
+        return StudyResponseDto.of(study, isEqual);
+    }
+
+    // 스터디 사용 언어 편집(스터디장)
+    @Transactional
+    public StudyResponseDto modStudyLang(Long studyId, StudyLangReqeustDto studyLangReqeustDto) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.STUDY_NOT_FOUND));
+
+        study.putLang(studyLangReqeustDto.getLang());
+        studyRepository.save(study);
+
+        return StudyResponseDto.of(study, true);
+    }
+
+    // 스터디 사용 도구 편집(스터디장)
+    @Transactional
+    public StudyResponseDto modStudyTool(Long studyId, StudyToolRequestDto studyToolRequestDto) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.STUDY_NOT_FOUND));
+
+        study.putTool(studyToolRequestDto.getTool());
+        studyRepository.save(study);
+
+        return StudyResponseDto.of(study, true);
+    }
+
+    // 스터디 해시태그 추가(스터디장)
+    @Transactional
+    public StudyResponseDto modStudyhashtags(Long studyId, HashtagRequestDto hashtagRequestDto) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.STUDY_NOT_FOUND));
+
+        for (String hashtag : hastagsToSet(hashtagRequestDto.getHashtagName())) {
+            hashtagToEntity(study, hashtag);
+        }
+
+        return StudyResponseDto.of(study, true);
+    }
+
+    // 스터디 해시태그 삭제(스터디장)
+    @Transactional
+    public void delStudyhashtag(HashtagRequestDto hashtagRequestDto) {
+        Hashtag hashtag = hashtagRepository.findByHashtagName(hashtagRequestDto.getHashtagName());
+        hashtagRepository.deleteById(hashtag.getHashtagId());
     }
 
     // 스터디 qna 보기
@@ -125,6 +154,8 @@ public class StudyService {
 
         if (!study.isRecruiting()) {
             throw new BadRequestException(ErrorCode.STUDY_NOT_RECRUITING);
+        } else if (study.getMemberStudies().size() == study.getMax()) {
+            throw new BadRequestException(ErrorCode.STUDY_FULL);
         }
 
         StudyApply studyApply = StudyApply.builder()
@@ -205,14 +236,47 @@ public class StudyService {
     }
 
     // 해시태그 스플릿
-    public Set<String> hastagsToSet(StudyRequestDto studyRequestDto) {
+    public Set<String> hastagsToSet(String hashtags) {
         Pattern myPattern = Pattern.compile("#(\\S+)");
-        Matcher mat = myPattern.matcher(studyRequestDto.getHashtags());
+        Matcher mat = myPattern.matcher(hashtags);
         Set<String> hashtagSet = new HashSet<>();
 
         while (mat.find()) {
             hashtagSet.add(mat.group(1));
         }
         return hashtagSet;
+    }
+
+    // 해시태그 영속화
+    public void hashtagToEntity(Study study, String hashtag) {
+        if (hashtagRepository.existsByHashtagName(hashtag)) {
+            Hashtag hashtagEntity = hashtagRepository.findByHashtagName(hashtag);
+            StudyHashtag studyHashtag = StudyHashtag.builder()
+                    .study(study)
+                    .hashtag(hashtagEntity)
+                    .build();
+            studyHashtagRepository.save(studyHashtag);
+
+            study.putStudyHashtag(studyHashtag);
+            studyRepository.save(study);
+            hashtagEntity.putStudyHashtag(studyHashtag);
+            hashtagRepository.save(hashtagEntity);
+        } else {
+            Hashtag hashtagEntity = Hashtag.builder()
+                    .hashtagName(hashtag)
+                    .studyList(new ArrayList<>())
+                    .build();
+            hashtagRepository.save(hashtagEntity);
+            StudyHashtag studyHashtag = StudyHashtag.builder()
+                    .study(study)
+                    .hashtag(hashtagEntity)
+                    .build();
+            studyHashtagRepository.save(studyHashtag);
+
+            study.putStudyHashtag(studyHashtag);
+            studyRepository.save(study);
+            hashtagEntity.putStudyHashtag(studyHashtag);
+            hashtagRepository.save(hashtagEntity);
+        }
     }
 }

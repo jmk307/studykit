@@ -33,6 +33,46 @@ public class StudyApiController {
         return ResponseEntity.ok(CommonApiResponse.of(studyService.makeStudy(authentication.getName(), studyRequestDto, multipartFiles)));
     }
 
+    @GetMapping("{studyId}")
+    @ApiOperation(value = "스터디 조회")
+    public ResponseEntity<CommonApiResponse<StudyResponseDto>> showStudy(
+            @ApiIgnore Authentication authentication,
+            @PathVariable Long studyId) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyService.showStudy(authentication.getName(), studyId)));
+    }
+
+    @PatchMapping("{studyId}/lang")
+    @ApiOperation(value = "스터디 언어 수정(스터디장)")
+    public ResponseEntity<CommonApiResponse<StudyResponseDto>> modStudyLang(
+            @PathVariable Long studyId,
+            @Valid @RequestBody StudyLangReqeustDto studyLangRequestDto) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyService.modStudyLang(studyId, studyLangRequestDto)));
+    }
+
+    @PatchMapping("{studyId}/tool")
+    @ApiOperation(value = "스터디 도구 수정(스터디장)")
+    public ResponseEntity<CommonApiResponse<StudyResponseDto>> modStudyTool(
+            @PathVariable Long studyId,
+            @Valid @RequestBody StudyToolRequestDto studyToolRequestDto) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyService.modStudyTool(studyId, studyToolRequestDto)));
+    }
+
+    @PostMapping("{studyId}/hashtags")
+    @ApiOperation(value = "스터디 해시태그 추가(스터디장)")
+    public ResponseEntity<CommonApiResponse<StudyResponseDto>> modStudyHashtags(
+            @PathVariable Long studyId,
+            @Valid @RequestBody HashtagRequestDto hashtagRequestDto) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyService.modStudyhashtags(studyId, hashtagRequestDto)));
+    }
+
+    @DeleteMapping("hashtag")
+    @ApiOperation(value = "스터디 해시태그 삭제(스터디장)")
+    public ResponseEntity<Void> delStudyHashtag(
+            @RequestBody HashtagRequestDto hashtagRequestDto) {
+        studyService.delStudyhashtag(hashtagRequestDto);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("{studyId}/qnas")
     @ApiOperation(value = "스터디 QnA 조회")
     public ResponseEntity<CommonApiResponse<QnaResponseDto>> showQna(
@@ -50,7 +90,7 @@ public class StudyApiController {
     }
 
     @PatchMapping("{studyId}")
-    @ApiOperation(value = "스터디 지원가능 수정")
+    @ApiOperation(value = "스터디 지원가능 수정(스터디장)")
     public ResponseEntity<CommonApiResponse<String>> modRecruiting(
             @PathVariable Long studyId) {
         return ResponseEntity.ok(CommonApiResponse.of(studyService.modRecruiting(studyId)));
@@ -65,24 +105,23 @@ public class StudyApiController {
     }
 
     @GetMapping("{studyId}/applies")
-    @ApiOperation(value = "스터디 지원자 조회")
+    @ApiOperation(value = "스터디 지원자 조회(스터디장)")
     public ResponseEntity<CommonApiResponse<List<StudyApplyResponseDto>>> showStudyApplicants(
             @PathVariable Long studyId) {
         return ResponseEntity.ok(CommonApiResponse.of(studyService.showStudyApplicants(studyId)));
     }
 
     @PostMapping("{studyId}/applies")
-    @ApiOperation(value = "스터디 지원자 승인")
+    @ApiOperation(value = "스터디 지원자 승인(스터디장)")
     public ResponseEntity<CommonApiResponse<String>> approveStudyApplicant(
             @PathVariable Long studyId,
             @RequestBody StudyApplyRequestDto studyApplyRequestDto) {
         return ResponseEntity.ok(CommonApiResponse.of(studyService.approveStudyApplicant(studyId, studyApplyRequestDto.getMemberId())));
     }
 
-    @DeleteMapping("{studyId}/applies/{studyApplyId}")
-    @ApiOperation(value = "스터디 지원자 거절")
+    @DeleteMapping("applies/{studyApplyId}")
+    @ApiOperation(value = "스터디 지원자 거절(스터디장)")
     public ResponseEntity<Void> delStudyApplicant(
-            @PathVariable Long studyId,
             @PathVariable Long studyApplyId) {
         studyService.delStudyApplicant(studyApplyId);
         return ResponseEntity.noContent().build();

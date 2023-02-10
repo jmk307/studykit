@@ -44,11 +44,13 @@ public class StudyResponseDto {
 
     private List<String> hashtags;
 
+    private boolean isEqual;
+
     @Builder
     public StudyResponseDto(Long studyId, String title, String description,
                             String deadline, List<String> studyImageUrl, int max,
                             String lang, String tool, Template template, Face face,
-                            Set<String> qna, String founder, List<String> hashtags) {
+                            Set<String> qna, String founder, List<String> hashtags, boolean isEqual) {
         this.studyId = studyId;
         this.title = title;
         this.description = description;
@@ -62,6 +64,7 @@ public class StudyResponseDto {
         this.qna = qna;
         this.founder = founder;
         this.hashtags = hashtags;
+        this.isEqual = isEqual;
     }
 
     public static StudyResponseDto of(Study study) {
@@ -82,6 +85,28 @@ public class StudyResponseDto {
                         .map(StudyHashtag::getHashtag)
                         .map(Hashtag::getHashtagName)
                         .collect(Collectors.toList()))
+                .build();
+    }
+
+    public static StudyResponseDto of(Study study, boolean isEqual) {
+        return StudyResponseDto.builder()
+                .studyId(study.getStudyId())
+                .title(study.getTitle())
+                .description(study.getDescription())
+                .deadline(study.getDeadline())
+                .studyImageUrl(study.getStudyImageUrl())
+                .max(study.getMax())
+                .lang(study.getLang())
+                .tool(study.getTool())
+                .template(study.getTemplate())
+                .face(study.getFace())
+                .qna(study.getQna())
+                .founder(study.getFounder().getNickname())
+                .hashtags(study.getHashtags().stream()
+                        .map(StudyHashtag::getHashtag)
+                        .map(Hashtag::getHashtagName)
+                        .collect(Collectors.toList()))
+                .isEqual(isEqual)
                 .build();
     }
 }
