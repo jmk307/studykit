@@ -3,6 +3,7 @@ package com.team4.studykit.domain.member.dto.member;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.studykit.domain.member.entity.Member;
 import com.team4.studykit.domain.member.model.Social;
+import com.team4.studykit.domain.study.model.Role;
 import com.team4.studykit.global.config.security.dto.TokenResponseDto;
 import lombok.*;
 
@@ -21,6 +22,10 @@ public class MemberResponseDto {
 
     private Social social;
 
+    private boolean isNew;
+
+    private Role role;
+
     private String accessToken;
 
     private String refreshToken;
@@ -34,6 +39,16 @@ public class MemberResponseDto {
                 .build();
     }
 
+    public static MemberResponseDto of(Member member, Role role) {
+        return MemberResponseDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .joinAccepted(member.getJoinAccepted())
+                .social(member.getSocial())
+                .role(role)
+                .build();
+    }
+
     public static MemberResponseDto of(Member member, TokenResponseDto tokenResponseDto) {
         return MemberResponseDto.builder()
                 .id(member.getId())
@@ -42,6 +57,18 @@ public class MemberResponseDto {
                 .social(member.getSocial())
                 .accessToken(tokenResponseDto.getAccessToken())
                 .refreshToken(tokenResponseDto.getRefreshToken())
+                .build();
+    }
+
+    public static MemberResponseDto ofSocial(Member member, TokenResponseDto tokenResponseDto, boolean isNew) {
+        return MemberResponseDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .joinAccepted(member.getJoinAccepted())
+                .social(member.getSocial())
+                .accessToken(tokenResponseDto.getAccessToken())
+                .refreshToken(tokenResponseDto.getRefreshToken())
+                .isNew(isNew)
                 .build();
     }
 }
