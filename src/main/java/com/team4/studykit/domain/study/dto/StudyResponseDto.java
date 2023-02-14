@@ -7,8 +7,10 @@ import com.team4.studykit.domain.study.entity.relation.StudyHashtag;
 import com.team4.studykit.domain.study.model.Face;
 import com.team4.studykit.domain.study.model.Role;
 import com.team4.studykit.domain.study.model.Template;
+import com.team4.studykit.global.util.Time;
 import lombok.*;
 
+import java.text.ParseException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +43,8 @@ public class StudyResponseDto {
 
     private Set<String> qna = new LinkedHashSet<>();
 
+    private String percent;
+
     private String founder;
 
     private List<String> hashtags;
@@ -51,7 +55,7 @@ public class StudyResponseDto {
     public StudyResponseDto(Long studyId, String title, String description,
                             String deadline, List<String> studyImageUrl, int max,
                             String lang, String tool, Template template, Face face,
-                            Set<String> qna, String founder, List<String> hashtags, Role role) {
+                            Set<String> qna, String percent, String founder, List<String> hashtags, Role role) {
         this.studyId = studyId;
         this.title = title;
         this.description = description;
@@ -63,6 +67,7 @@ public class StudyResponseDto {
         this.template = template;
         this.face = face;
         this.qna = qna;
+        this.percent = percent;
         this.founder = founder;
         this.hashtags = hashtags;
         this.role = role;
@@ -81,6 +86,7 @@ public class StudyResponseDto {
                 .template(study.getTemplate())
                 .face(study.getFace())
                 .qna(study.getQna())
+                .percent(Time.calculatePercent(study.getDeadline()))
                 .founder(study.getFounder().getNickname())
                 .hashtags(study.getHashtags().stream()
                         .map(StudyHashtag::getHashtag)
@@ -102,6 +108,7 @@ public class StudyResponseDto {
                 .template(study.getTemplate())
                 .face(study.getFace())
                 .qna(study.getQna())
+                .percent(Time.calculatePercent(study.getDeadline()))
                 .founder(study.getFounder().getNickname())
                 .hashtags(study.getHashtags().stream()
                         .map(StudyHashtag::getHashtag)

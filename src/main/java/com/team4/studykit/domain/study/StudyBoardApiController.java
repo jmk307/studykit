@@ -1,7 +1,10 @@
 package com.team4.studykit.domain.study;
 
+import com.team4.studykit.domain.study.dto.StudyBoardReplyRequestDto;
+import com.team4.studykit.domain.study.dto.StudyBoardReplyResponseDto;
 import com.team4.studykit.domain.study.dto.StudyBoardRequestDto;
 import com.team4.studykit.domain.study.dto.StudyBoardResponseDto;
+import com.team4.studykit.domain.study.entity.StudyBoardReply;
 import com.team4.studykit.global.config.CommonApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -66,5 +69,15 @@ public class StudyBoardApiController {
             @PathVariable Long studyBoardId) {
         studyBoardService.delStudyBoard(studyBoardId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{studyBoardId}/replies")
+    @ApiOperation(value = "스터디 게시판 댓글 생성")
+    public ResponseEntity<CommonApiResponse<StudyBoardReplyResponseDto>> makeStudyBoardReply(
+            @ApiIgnore Authentication authentication,
+            @PathVariable Long studyId,
+            @PathVariable Long studyBoardId,
+            @Valid @RequestBody StudyBoardReplyRequestDto studyBoardReplyRequestDto) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyBoardService.makeStudyBoardReply(authentication.getName(), studyBoardId, studyBoardReplyRequestDto)));
     }
 }

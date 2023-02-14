@@ -3,6 +3,7 @@ package com.team4.studykit.domain.member.entity;
 import com.team4.studykit.domain.member.model.Social;
 import com.team4.studykit.domain.study.entity.StudyApply;
 import com.team4.studykit.domain.study.entity.StudyBoard;
+import com.team4.studykit.domain.study.entity.StudyBoardReply;
 import com.team4.studykit.domain.study.entity.relation.MemberStudy;
 import com.team4.studykit.domain.study.entity.Study;
 import lombok.AccessLevel;
@@ -52,11 +53,15 @@ public class Member {
     // 스터디 게시판
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StudyBoard> studyBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StudyBoardReply> studyBoardReplies = new ArrayList<>();
     
     @Builder
     public Member(Long memberId, String id, String password, String nickname,
                   Boolean joinAccepted, Social social, List<Study> founders,
-                  List<MemberStudy> memberStudies, List<StudyBoard> studyBoards) {
+                  List<MemberStudy> memberStudies, List<StudyBoard> studyBoards,
+                  List<StudyBoardReply> studyBoardReplies) {
         this.memberId = memberId;
         this.id = id;
         this.password = password;
@@ -66,5 +71,6 @@ public class Member {
         this.founders = founders;
         this.memberStudies = memberStudies;
         this.studyBoards = studyBoards;
+        this.studyBoardReplies = studyBoardReplies;
     }
 }

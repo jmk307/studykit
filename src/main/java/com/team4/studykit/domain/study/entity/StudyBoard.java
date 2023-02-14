@@ -33,6 +33,9 @@ public class StudyBoard extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
 
+    @OneToMany(mappedBy = "studyBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StudyBoardReply> studyBoardReplies = new ArrayList<>();
+
     public void putStudyBoard(String title, String description, List<String> studyBoardImageUrls,
                        boolean notice) {
         this.title = title;
@@ -43,12 +46,13 @@ public class StudyBoard extends BaseTimeEntity {
 
     @Builder
     public StudyBoard(String title, String description, List<String> studyBoardImageUrls,
-                      boolean notice, Study study, Member writer) {
+                      boolean notice, Study study, Member writer, List<StudyBoardReply> studyBoardReplies) {
         this.title = title;
         this.description = description;
         this.studyBoardImageUrls = studyBoardImageUrls;
         this.notice = notice;
         this.study = study;
         this.writer = writer;
+        this.studyBoardReplies = studyBoardReplies;
     }
 }
