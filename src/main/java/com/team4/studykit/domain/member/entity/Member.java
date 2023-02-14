@@ -2,6 +2,7 @@ package com.team4.studykit.domain.member.entity;
 
 import com.team4.studykit.domain.member.model.Social;
 import com.team4.studykit.domain.study.entity.StudyApply;
+import com.team4.studykit.domain.study.entity.StudyBoard;
 import com.team4.studykit.domain.study.entity.relation.MemberStudy;
 import com.team4.studykit.domain.study.entity.Study;
 import lombok.AccessLevel;
@@ -44,13 +45,18 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
+    // 스터디 신청자
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StudyApply> studyApplies = new ArrayList<>();
+
+    // 스터디 게시판
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StudyBoard> studyBoards = new ArrayList<>();
     
     @Builder
     public Member(Long memberId, String id, String password, String nickname,
                   Boolean joinAccepted, Social social, List<Study> founders,
-                  List<MemberStudy> memberStudies) {
+                  List<MemberStudy> memberStudies, List<StudyBoard> studyBoards) {
         this.memberId = memberId;
         this.id = id;
         this.password = password;
@@ -59,5 +65,6 @@ public class Member {
         this.social = social;
         this.founders = founders;
         this.memberStudies = memberStudies;
+        this.studyBoards = studyBoards;
     }
 }

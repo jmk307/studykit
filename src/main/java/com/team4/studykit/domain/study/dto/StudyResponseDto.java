@@ -5,6 +5,7 @@ import com.team4.studykit.domain.study.entity.Hashtag;
 import com.team4.studykit.domain.study.entity.Study;
 import com.team4.studykit.domain.study.entity.relation.StudyHashtag;
 import com.team4.studykit.domain.study.model.Face;
+import com.team4.studykit.domain.study.model.Role;
 import com.team4.studykit.domain.study.model.Template;
 import lombok.*;
 
@@ -44,13 +45,13 @@ public class StudyResponseDto {
 
     private List<String> hashtags;
 
-    private boolean isEqual;
+    private Role role;
 
     @Builder
     public StudyResponseDto(Long studyId, String title, String description,
                             String deadline, List<String> studyImageUrl, int max,
                             String lang, String tool, Template template, Face face,
-                            Set<String> qna, String founder, List<String> hashtags, boolean isEqual) {
+                            Set<String> qna, String founder, List<String> hashtags, Role role) {
         this.studyId = studyId;
         this.title = title;
         this.description = description;
@@ -64,7 +65,7 @@ public class StudyResponseDto {
         this.qna = qna;
         this.founder = founder;
         this.hashtags = hashtags;
-        this.isEqual = isEqual;
+        this.role = role;
     }
 
     public static StudyResponseDto of(Study study) {
@@ -88,7 +89,7 @@ public class StudyResponseDto {
                 .build();
     }
 
-    public static StudyResponseDto of(Study study, boolean isEqual) {
+    public static StudyResponseDto of(Study study, Role role) {
         return StudyResponseDto.builder()
                 .studyId(study.getStudyId())
                 .title(study.getTitle())
@@ -106,7 +107,7 @@ public class StudyResponseDto {
                         .map(StudyHashtag::getHashtag)
                         .map(Hashtag::getHashtagName)
                         .collect(Collectors.toList()))
-                .isEqual(isEqual)
+                .role(role)
                 .build();
     }
 }

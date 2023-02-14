@@ -71,7 +71,8 @@ public enum ErrorCode {
     /* 스터디 관련 오류 */
     STUDY_NOT_FOUND(NOT_FOUND, "S001","해당 스터디 정보를 찾을 수 없습니다"),
     STUDY_NOT_RECRUITING(BAD_REQUEST, "S002","모집중인 스터디가 아닙니다"),
-    STUDY_FULL(BAD_REQUEST, "S003","모집인원이 가득 찼습니다");
+    STUDY_FULL(BAD_REQUEST, "S003","모집인원이 가득 찼습니다"),
+    STUDY_BOARD_NOT_FOUND(NOT_FOUND, "S004","해당 스터디 게시글을 찾을 수 없습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

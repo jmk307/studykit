@@ -1,6 +1,7 @@
 package com.team4.studykit.domain.study;
 
 import com.team4.studykit.domain.study.dto.*;
+import com.team4.studykit.domain.study.model.Template;
 import com.team4.studykit.global.config.CommonApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +22,14 @@ import java.util.List;
 @Api(tags = "스터디")
 public class StudyApiController {
     private final StudyService studyService;
+
+    @GetMapping
+    @ApiOperation(value = "스터디 전체 리스트 조회 및 검색")
+    public ResponseEntity<CommonApiResponse<List<StudyResponseDto>>> showStudies(
+            @RequestParam(required = false) Template template,
+            @RequestParam(required = false) String serachKeyword) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyService.showStudies(template, serachKeyword)));
+    }
 
     @PostMapping(consumes = {
             MediaType.APPLICATION_JSON_VALUE,

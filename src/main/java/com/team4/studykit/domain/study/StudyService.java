@@ -8,6 +8,8 @@ import com.team4.studykit.domain.study.entity.Study;
 import com.team4.studykit.domain.study.entity.StudyApply;
 import com.team4.studykit.domain.study.entity.relation.MemberStudy;
 import com.team4.studykit.domain.study.entity.relation.StudyHashtag;
+import com.team4.studykit.domain.study.model.Role;
+import com.team4.studykit.domain.study.model.Template;
 import com.team4.studykit.domain.study.repository.*;
 import com.team4.studykit.global.config.s3.AwsS3ServiceImpl;
 import com.team4.studykit.global.error.ErrorCode;
@@ -35,13 +37,30 @@ public class StudyService {
     private final StudyApplyRepository studyApplyRepository;
     private final MemberStudyRepository memberStudyRepository;
 
-    // 스터디 전체보기 -> 검색 조건 추가해야 함
+    // 스터디 전체보기
     @Transactional(readOnly = true)
-    public List<StudyResponseDto> showStudies() {
-        List<Study> studyList = studyRepository.findAll();
-        return studyList.stream()
-                .map(StudyResponseDto::of)
-                .collect(Collectors.toList());
+    public List<StudyResponseDto> showStudies(Template template, String searchKeyword) {
+        if (template != null && searchKeyword == null) {
+            List<Study> studyList = studyRepository.findByTemplate(template);
+            return studyList.stream()
+                    .map(StudyResponseDto::of)
+                    .collect(Collectors.toList());
+        } else if (template == null && searchKeyword != null) {
+            List<Study> studyList = studyRepository.findByTitleContaining(searchKeyword);
+            return studyList.stream()
+                    .map(StudyResponseDto::of)
+                    .collect(Collectors.toList());
+        } else if (template != null) {
+            List<Study> studyList = studyRepository.findByTemplateAndTitleContaining(template, searchKeyword);
+            return studyList.stream()
+                    .map(StudyResponseDto::of)
+                    .collect(Collectors.toList());
+        } else {
+            List<Study> studyList = studyRepository.findAll();
+            return studyList.stream()
+                    .map(StudyResponseDto::of)
+                    .collect(Collectors.toList());
+        }
     }
     
     // 스터디 개설
@@ -68,6 +87,7 @@ public class StudyService {
                 .founder(member)
                 .memberStudies(new ArrayList<>())
                 .hashtags(new ArrayList<>())
+                .studyBoards(new ArrayList<>())
                 .build();
         studyRepository.save(study);
 
@@ -87,9 +107,11 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.STUDY_NOT_FOUND));
 
-        boolean isEqual = study.getFounder().getNickname().equals(member.getNickname());
+        Role role = study.getFounder().getNickname().equals(member.getNickname())
+                ? Role.STUDY_FOUNDER
+                : Role.STUDY_MEMBER;
 
-        return StudyResponseDto.of(study, isEqual);
+        return StudyResponseDto.of(study, role);
     }
 
     // 스터디 사용 언어 편집(스터디장)
@@ -101,7 +123,7 @@ public class StudyService {
         study.putLang(studyLangReqeustDto.getLang());
         studyRepository.save(study);
 
-        return StudyResponseDto.of(study, true);
+        return StudyResponseDto.of(study, Role.STUDY_FOUNDER);
     }
 
     // 스터디 사용 도구 편집(스터디장)
@@ -113,7 +135,7 @@ public class StudyService {
         study.putTool(studyToolRequestDto.getTool());
         studyRepository.save(study);
 
-        return StudyResponseDto.of(study, true);
+        return StudyResponseDto.of(study, Role.STUDY_FOUNDER);
     }
 
     // 스터디 해시태그 추가(스터디장)
@@ -126,7 +148,7 @@ public class StudyService {
             hashtagToEntity(study, hashtag);
         }
 
-        return StudyResponseDto.of(study, true);
+        return StudyResponseDto.of(study, Role.STUDY_FOUNDER);
     }
 
     // 스터디 해시태그 삭제(스터디장)

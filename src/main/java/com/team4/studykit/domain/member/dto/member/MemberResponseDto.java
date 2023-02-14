@@ -3,6 +3,7 @@ package com.team4.studykit.domain.member.dto.member;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.team4.studykit.domain.member.entity.Member;
 import com.team4.studykit.domain.member.model.Social;
+import com.team4.studykit.domain.study.model.Role;
 import com.team4.studykit.global.config.security.dto.TokenResponseDto;
 import lombok.*;
 
@@ -23,6 +24,8 @@ public class MemberResponseDto {
 
     private boolean isNew;
 
+    private Role role;
+
     private String accessToken;
 
     private String refreshToken;
@@ -33,6 +36,16 @@ public class MemberResponseDto {
                 .nickname(member.getNickname())
                 .joinAccepted(member.getJoinAccepted())
                 .social(member.getSocial())
+                .build();
+    }
+
+    public static MemberResponseDto of(Member member, Role role) {
+        return MemberResponseDto.builder()
+                .id(member.getId())
+                .nickname(member.getNickname())
+                .joinAccepted(member.getJoinAccepted())
+                .social(member.getSocial())
+                .role(role)
                 .build();
     }
 

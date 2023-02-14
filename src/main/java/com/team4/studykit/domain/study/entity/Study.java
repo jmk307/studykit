@@ -73,6 +73,9 @@ public class Study extends BaseTimeEntity {
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<StudyApply> studyApplies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<StudyBoard> studyBoards = new ArrayList<>();
+
     public void putStudyHashtag(StudyHashtag studyHashtag) {
         this.hashtags.add(studyHashtag);
     }
@@ -93,7 +96,8 @@ public class Study extends BaseTimeEntity {
     public Study(Long studyId, String title, String description, String deadline,
                  List<String> studyImageUrl, int max, String lang, String tool,
                  Template template, Face face, Set<String> qna, boolean recruiting,
-                 Member founder, List<StudyHashtag> hashtags, List<MemberStudy> memberStudies) {
+                 Member founder, List<StudyHashtag> hashtags, List<MemberStudy> memberStudies,
+                 List<StudyBoard> studyBoards) {
         this.studyId = studyId;
         this.title = title;
         this.description = description;
@@ -109,5 +113,6 @@ public class Study extends BaseTimeEntity {
         this.founder = founder;
         this.hashtags = hashtags;
         this.memberStudies = memberStudies;
+        this.studyBoards = studyBoards;
     }
 }
