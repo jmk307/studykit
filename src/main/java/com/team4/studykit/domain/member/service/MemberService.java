@@ -58,9 +58,6 @@ public class MemberService {
         Optional<Member> checkMember = memberRepository.findById(loginDto.getId());
         if (checkMember.isEmpty()) {
             throw new BadRequestException(ErrorCode.MEMBER_NOT_FOUND);
-        } else if (!checkMember.get().getSocial().equals(Social.COMMON)
-                && memberRepository.existsById(checkMember.get().getId())) {
-            throw new BadRequestException(ErrorCode.SOCIAL_ALREADY_EXIST);
         }
 
         HttpHeaders httpHeaders = new HttpHeaders();

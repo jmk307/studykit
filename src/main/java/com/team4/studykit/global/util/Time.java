@@ -1,10 +1,16 @@
 package com.team4.studykit.global.util;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @AllArgsConstructor
+@Slf4j
 public class Time {
     private static class TIME_MAXIMUM {
         public static final int SEC = 60;
@@ -38,5 +44,33 @@ public class Time {
             msg = (diffTime) + "년 전";
         }
         return msg;
+    }
+
+    public static String calculatePercent(String dates) {
+        String percent = "";
+        try {
+            String[] date = StringUtils.split(dates, "~");
+            String start = date[0];
+            String end = date[1];
+            log.info(start);
+            log.info(end);
+
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date d1 = format.parse(start);
+            Date d2 = format.parse(end);
+            Date now = new Date();
+
+            long total = (d2.getTime() - d1.getTime()) / 1000;
+            long part = (now.getTime() - d1.getTime()) / 1000;
+            log.info(String.valueOf(total));
+            log.info(String.valueOf(part));
+            long totals = total / (24 * 60 * 60);
+            long parts = part / (24 * 60 * 60);
+
+            percent = String.format("%.0f", (double) parts / totals * 100);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return percent;
     }
 }

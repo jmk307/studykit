@@ -3,6 +3,7 @@ package com.team4.studykit.global.config.security.jwt;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;

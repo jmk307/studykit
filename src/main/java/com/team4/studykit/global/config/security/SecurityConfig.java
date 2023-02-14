@@ -79,7 +79,7 @@ public class SecurityConfig {
                 .antMatchers("/csrf").anonymous()
 
                 // 여기서부터 uri 권한 설정
-                /*.antMatchers("").authenticated()*/
+                .antMatchers("/api/members").authenticated()
 
                 .anyRequest().permitAll()
 
