@@ -65,18 +65,15 @@ public class StudyService {
     
     // 스터디 개설
     @Transactional
-    public StudyResponseDto makeStudy(String id, StudyRequestDto studyRequestDto, List<MultipartFile> multipartFiles) {
+    public StudyResponseDto makeStudy(String id, StudyRequestDto studyRequestDto) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.MEMBER_NOT_FOUND));
-        List<String> studyImageUrl = (multipartFiles == null)
-                ? new ArrayList<>()
-                : awsS3Service.uploadImage(multipartFiles, "study");
 
         Study study = Study.builder()
                 .title(studyRequestDto.getTitle())
                 .description(studyRequestDto.getDescription())
                 .deadline(studyRequestDto.getDeadline())
-                .studyImageUrl(studyImageUrl)
+                .studyImageUrl(new ArrayList<>())
                 .max(studyRequestDto.getMax())
                 .lang(studyRequestDto.getLang())
                 .tool(studyRequestDto.getTool())
