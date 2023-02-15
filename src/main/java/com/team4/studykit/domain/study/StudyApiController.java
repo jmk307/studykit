@@ -31,15 +31,12 @@ public class StudyApiController {
         return ResponseEntity.ok(CommonApiResponse.of(studyService.showStudies(template, serachKeyword)));
     }
 
-    @PostMapping(consumes = {
-            MediaType.APPLICATION_JSON_VALUE,
-            MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping
     @ApiOperation(value = "스터디 개설")
     public ResponseEntity<CommonApiResponse<StudyResponseDto>> makeStudy(
             @ApiIgnore Authentication authentication,
-            @Valid @RequestPart StudyRequestDto studyRequestDto,
-            @RequestPart(required = false) List<MultipartFile> multipartFiles) {
-        return ResponseEntity.ok(CommonApiResponse.of(studyService.makeStudy(authentication.getName(), studyRequestDto, multipartFiles)));
+            @Valid @RequestBody StudyRequestDto studyRequestDto) {
+        return ResponseEntity.ok(CommonApiResponse.of(studyService.makeStudy(authentication.getName(), studyRequestDto)));
     }
 
     @GetMapping("{studyId}")
