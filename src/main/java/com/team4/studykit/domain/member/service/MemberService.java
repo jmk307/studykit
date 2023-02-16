@@ -63,11 +63,9 @@ public class MemberService {
         HttpHeaders httpHeaders = new HttpHeaders();
         TokenResponseDto tokenResponseDTO = tokenProvider.generateToken(loginDto.getId());
 
-        Member member = memberRepository.findById(loginDto.getId())
-                .orElseThrow(() -> new BadRequestException(ErrorCode.MEMBER_NOT_FOUND));
         httpHeaders.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
 
-        return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(member, tokenResponseDTO)), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(CommonApiResponse.of(MemberResponseDto.of(checkMember.get(), tokenResponseDTO)), httpHeaders, HttpStatus.OK);
     }
 
     // 토큰 재발급
