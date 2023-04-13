@@ -1,13 +1,32 @@
 {
-  "AWSEBDockerrunVersion": "1",
-  "Image": {
-    "Name": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
-    "Update": "true"
-  },
-  "Ports": [
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
     {
-      "ContainerPort": "5000",
-      "HostPort": "5000"
+      "name": "backend",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
+      "hostname": "backend",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 5000,
+          "containerPort": 5000
+        }
+      ]
+    },
+    {
+      "name": "nginx",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest",
+      "hostname": "nginx",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": ["backend"],
+      "memory": 512
     }
   ]
 }
