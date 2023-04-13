@@ -1,17 +1,23 @@
-version: "3.7"
+version: '3'
 services:
-  # 서버 설정
-  backend:
+  studykit:
+    container_name: api
     image: 645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest
-    container_name: backend
-    network_mode: "host"
-
-  # nginx 설정
+    ports:
+      - "5000:5000"
+  dev:
+    container_name: dev
+    image: 645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/dev:latest
+    ports:
+      - "5050:5050"
   nginx:
+    container_name: nginx
     depends_on:
-      - backend
-    network_mode: "host"
-    restart: always
+      - studykit
+      - dev
+    image: 645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest
+    ports:
+      - "80:80"
     build:
-      dockerfile: Dockerfile
       context: ./nginx
+      dockerfile: Dockerfile
