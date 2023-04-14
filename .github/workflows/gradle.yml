@@ -5,9 +5,6 @@ on:
     branches: main
   workflow_dispatch: # 수동 실행
 
-env:
-  EB_DEPLOYMENT_PACKAGE: docker-compose.yml
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -71,7 +68,7 @@ jobs:
         run: |
           mkdir -p deploy
           cp -r .ebextensions deploy/.ebextensions
-          cp docker-compose.yml deploy/docker-compose.yml
+          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
           cd deploy && zip -r deploy.zip .
 
       - name: Deploy to EB # (2)
@@ -83,5 +80,5 @@ jobs:
           environment_name: Studykit-docker-env
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
-          deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
+          deployment_package: deploy/deploy.zip
           wait_for_environment_recovery: 180
