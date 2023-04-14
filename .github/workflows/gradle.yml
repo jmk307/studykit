@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # 수동 실행
 
 env:
-  EB_DEPLOYMENT_PACKAGE: elasticbeanstalk/docker-compose.yml
+  EB_DEPLOYMENT_PACKAGE: elasticbeanstalk/Dockerrun.aws.json
 
 jobs:
   deploy:
@@ -84,5 +84,5 @@ jobs:
           environment_name: Studykit-env-1
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
-          deployment_package: deploy/deploy.zip
+          deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
           wait_for_environment_recovery: 180
