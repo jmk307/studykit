@@ -84,5 +84,5 @@ jobs:
           environment_name: Studykit-env-1
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
-          deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
+          deployment_package: deploy/deploy.zip
           wait_for_environment_recovery: 180
