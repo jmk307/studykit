@@ -1,7 +1,7 @@
 version: '3'
 services:
-  studykit:
-    container_name: api
+  prod:
+    container_name: prod
     image: 645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest
     ports:
       - "5000:5000"
@@ -13,7 +13,7 @@ services:
   nginx:
     container_name: nginx
     depends_on:
-      - studykit
+      - prod
       - dev
     image: 645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest
     ports:
