@@ -1,3 +1,31 @@
 {
-  "AWSEBDockerrunVersion": 3
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name": "prod",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
+      "hostname": "prod",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 5000
+        }
+      ]
+    },
+    {
+      "name": "dev",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/dev:latest",
+      "hostname": "dev",
+      "essential": true,
+      "memory": 1024,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 5050
+        }
+      ]
+    }
+  ]
 }
