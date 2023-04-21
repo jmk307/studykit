@@ -2,6 +2,23 @@
   "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:645380415845:task-definition/studykit-task-definition:4",
   "containerDefinitions": [
     {
+      "name": "nginx",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest",
+      "memory": "256",
+      "cpu": "256",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": "80",
+          "protocol": "tcp"
+        }
+      ],
+      "links": [
+        "prod",
+        "dev"
+      ]
+    },
+    {
       "name": "prod",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
       "cpu": 0,
@@ -32,17 +49,6 @@
           "appProtocol": "http"
         }
       ],
-      "essential": true,
-      "environment": [],
-      "environmentFiles": [],
-      "mountPoints": [],
-      "volumesFrom": []
-    },
-    {
-      "name": "nginx",
-      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest",
-      "cpu": 0,
-      "portMappings": [],
       "essential": true,
       "environment": [],
       "environmentFiles": [],
