@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:645380415845:task-definition/studykit-task-definition:1",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:645380415845:task-definition/studykit-task-definition:4",
   "containerDefinitions": [
     {
       "name": "prod",
@@ -16,6 +16,35 @@
       ],
       "essential": true,
       "environment": [],
+      "mountPoints": [],
+      "volumesFrom": []
+    },
+    {
+      "name": "dev",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/dev:latest",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "dev-5050-tcp",
+          "containerPort": 5050,
+          "hostPort": 5050,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": []
+    },
+    {
+      "name": "nginx",
+      "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest",
+      "cpu": 0,
+      "portMappings": [],
+      "essential": true,
+      "environment": [],
       "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": []
@@ -25,12 +54,21 @@
   "taskRoleArn": "arn:aws:iam::645380415845:role/ecsFullAccessRole",
   "executionRoleArn": "arn:aws:iam::645380415845:role/ecsFullAccessRole",
   "networkMode": "awsvpc",
-  "revision": 1,
+  "revision": 4,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
     {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
       "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
     },
     {
       "name": "com.amazonaws.ecs.capability.task-iam-role"
@@ -43,6 +81,9 @@
     },
     {
       "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
     }
   ],
   "placementConstraints": [],
@@ -58,7 +99,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2023-04-18T06:45:09.284Z",
+  "registeredAt": "2023-04-21T08:47:44.306Z",
   "registeredBy": "arn:aws:iam::645380415845:root",
   "tags": []
 }
