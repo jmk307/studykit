@@ -4,8 +4,7 @@
     {
       "name": "nginx",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/nginx:latest",
-      "memory": "256",
-      "cpu": "256",
+      "cpu": 0,
       "essential": true,
       "portMappings": [
         {
@@ -17,15 +16,13 @@
     {
       "name": "prod",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
-      "memory": "256",
-      "cpu": "256",
+      "cpu": 0,
       "essential": true
     },
     {
       "name": "dev",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/dev:latest",
-      "memory": "256",
-      "cpu": "256",
+      "cpu": 0,
       "essential": true
     }
   ],
