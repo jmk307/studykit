@@ -12,10 +12,6 @@
           "containerPort": "80",
           "protocol": "tcp"
         }
-      ],
-      "links": [
-        "prod",
-        "dev"
       ]
     },
     {
