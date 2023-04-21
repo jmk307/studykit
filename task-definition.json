@@ -17,39 +17,16 @@
     {
       "name": "prod",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
-      "cpu": 0,
-      "portMappings": [
-        {
-          "name": "prod-5000-tcp",
-          "containerPort": 5000,
-          "hostPort": 5000,
-          "protocol": "tcp",
-          "appProtocol": "http"
-        }
-      ],
-      "essential": true,
-      "environment": [],
-      "mountPoints": [],
-      "volumesFrom": []
+      "memory": "1024",
+      "cpu": "1024",
+      "essential": true
     },
     {
       "name": "dev",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/dev:latest",
-      "cpu": 0,
-      "portMappings": [
-        {
-          "name": "dev-5050-tcp",
-          "containerPort": 5050,
-          "hostPort": 5050,
-          "protocol": "tcp",
-          "appProtocol": "http"
-        }
-      ],
-      "essential": true,
-      "environment": [],
-      "environmentFiles": [],
-      "mountPoints": [],
-      "volumesFrom": []
+      "memory": "1024",
+      "cpu": "1024",
+      "essential": true
     }
   ],
   "family": "studykit-task-definition",
