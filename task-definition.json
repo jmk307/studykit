@@ -17,12 +17,24 @@
       "name": "prod",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/studykit:latest",
       "cpu": 0,
+      "portMappings": [
+        {
+          "hostPort": 5000,
+          "containerPort": 5000
+        }
+      ],
       "essential": true
     },
     {
       "name": "dev",
       "image": "645380415845.dkr.ecr.ap-northeast-2.amazonaws.com/dev:latest",
       "cpu": 0,
+      "portMappings": [
+        {
+          "hostPort": 5050,
+          "containerPort": 5050
+        }
+      ],
       "essential": true
     }
   ],
